@@ -1756,6 +1756,28 @@ namespace MissionPlanner.GCSViews
             ((Control) sender).Enabled = true;
         }
 
+        bool up = false;
+        private void BUT_setbatt_Click(object sender, EventArgs e)
+        {
+
+            if (up)
+            {
+                MainV2.comPort.setParam("SIM_BATT_VOLTAGE", 12.6);
+                up = !up;
+            }
+            else
+            {
+                MainV2.comPort.setParam("SIM_BATT_VOLTAGE", 11);
+                up = !up;
+            }
+        }
+
+        private void BUTlogs_Click(object sender, EventArgs e)
+        {
+            this.tableLayoutPaneltlogs.Visible = !this.tableLayoutPaneltlogs.Visible;
+
+        }
+
         void cam_camimage(Image camimage)
         {
             hud1.bgimage = camimage;
@@ -3208,6 +3230,8 @@ namespace MissionPlanner.GCSViews
 
         private void mainloop()
         {
+            
+
             threadrun = true;
             EndPoint Remote = new IPEndPoint(IPAddress.Any, 0);
 
@@ -3233,8 +3257,37 @@ namespace MissionPlanner.GCSViews
                 Thread.Sleep(1000);
             }
 
+            //quickView2.number = MainV2.comPort.MAV.cs.battery_cell1;
+            ChangeQVColor(quickView2, Color.FromArgb(128, 255, 128));
+
             while (threadrun)
             {
+                // Réinitialisation 
+                //quickView1.number = MainV2.comPort.MAV.cs.alt;
+                ChangeQVColor(quickView1, Color.FromArgb(128, 255, 128));
+                this.quickView1.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+                quickView2.desc = "Battery Voltage (V)";
+                //this.quickView2.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+                ChangeQVColor(quickView4, Color.FromArgb(128, 255, 128));
+                this.quickView4.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+                ChangeQVColor(quickView5, Color.FromArgb(128, 255, 128));
+                this.quickView5.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+
+                //battery limit
+                double batterylimit = 12;
+
+                if (MainV2.comPort.MAV.cs.battery_cell1 <= batterylimit)
+                { 
+                    ChangeQVColor(quickView2, Color.FromArgb(255, 128, 128));
+                    this.quickView2.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+                }
+                else
+                {
+                    ChangeQVColor(quickView2, Color.FromArgb(128, 255, 128));
+                    this.quickView2.numberColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+                }
+
+
                 if (MainV2.comPort.giveComport)
                 {
                     //await Task.Delay(50);
@@ -4116,6 +4169,43 @@ namespace MissionPlanner.GCSViews
             }
 
             Console.WriteLine("FD Main loop exit");
+        }
+
+
+        private void EnableDisableButton(MyButton But, bool enable_or_not)
+        {
+            if (But.InvokeRequired)
+            {
+                But.Invoke(new Action(() => But.Enabled = enable_or_not));
+            }
+            else
+            {
+                But.Enabled = enable_or_not;
+            }
+        }
+
+        private void ChangeLabelColor(System.Windows.Forms.Label lbl, Color clr)
+        {
+            if (lbl.InvokeRequired)
+            {
+                lbl.Invoke(new Action(() => lbl.BackColor = clr));
+            }
+            else
+            {
+                lbl.BackColor = clr;
+            }
+        }
+
+        private void ChangeQVColor(QuickView QV, Color Clr)
+        {
+            if (QV.InvokeRequired)
+            {
+                QV.Invoke(new Action(() => QV.ForeColor = Clr));
+            }
+            else
+            {
+                QV.ForeColor = Clr;
+            }
         }
 
 
