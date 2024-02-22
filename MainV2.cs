@@ -1222,9 +1222,9 @@ namespace MissionPlanner
 
             displayicons = icons;
 
-            MainMenu.BackColor = SystemColors.MenuBar;
+            //MainMenu.BackColor = SystemColors.MenuBar;
 
-            MainMenu.BackgroundImage = displayicons.bg;
+            //MainMenu.BackgroundImage = displayicons.bg;
 
             MenuFlightData.Image = displayicons.fd;
             MenuFlightPlanner.Image = displayicons.fp;
