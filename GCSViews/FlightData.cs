@@ -6365,4 +6365,5 @@ namespace MissionPlanner.GCSViews
             }
         }
     }
+
 }
